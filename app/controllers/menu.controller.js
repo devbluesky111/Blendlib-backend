@@ -51,8 +51,7 @@ exports.delete = (req, res) => {
 };
 
 exports.getAll = (req, res) => {
-  // menuModule.getAll((err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."))
-  res.send('okok');
+  menuModule.getAll((err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
 };
 
 
