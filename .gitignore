@@ -22,3 +22,6 @@ typings/
 dist
 
 .env
+
+*.log
+*.lock
