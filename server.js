@@ -10,13 +10,13 @@ const app = express();
 app.use(cors());
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 
 
 app.use(express.static('upload'));
 
-require("./app/routes/menu.routes.js")(app);
+// require("./app/routes/menu.routes.js")(app);
 
 
 // set port, listen for requests
