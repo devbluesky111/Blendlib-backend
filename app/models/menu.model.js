@@ -69,6 +69,19 @@ menuModule.getAll = async (result) => {
 };
 
 
+menuModule.getAll_o = async (result) => {
+  try {
+    const [res, fields] = await sql.promise().query(
+      "SELECT * FROM menu WHERE status = 'on' ORDER BY order_num"
+    );
+
+    result(null, res);
+  } catch (err) {
+    result(err, null);
+  };
+};
+
+
 
 
 
@@ -125,6 +138,18 @@ menuModule.getAllSubMenu = async (result) => {
   try {
     const [res, fields] = await sql.promise().query(
       "SELECT * FROM submenu ORDER BY order_num"
+    );
+
+    result(null, res);
+  } catch (err) {
+    result(err, null);
+  };
+};
+
+menuModule.getAllSubMenu_o = async (result) => {
+  try {
+    const [res, fields] = await sql.promise().query(
+      "SELECT * FROM submenu WHERE status = 'on' ORDER BY order_num"
     );
 
     result(null, res);

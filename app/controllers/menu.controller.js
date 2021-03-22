@@ -55,6 +55,11 @@ exports.getAll = (req, res) => {
 };
 
 
+exports.getAll_o = (req, res) => {
+  menuModule.getAll_o((err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
+};
+
+
 
 exports.createSubMenu = (req, res) => {
   // Validate request
@@ -91,4 +96,9 @@ exports.deleteSubMenu = (req, res) => {
 
 exports.getAllSubMenu = (req, res) => {
   menuModule.getAllSubMenu((err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
+};
+
+
+exports.getAllSubMenu_o = (req, res) => {
+  menuModule.getAllSubMenu_o((err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
 };
