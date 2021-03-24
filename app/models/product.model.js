@@ -112,6 +112,40 @@ productModule.get_product_by_id = async (body, result) => {
   };
 };
 
+productModule.upload = async (body, filename, result) => {
+  try {
+    let new_file;
+
+    if (body.name === 'featured_images') {
+      let resp = await sql.promise().query(
+        "SELECT featured_images FROM product WHERE id = ?", 
+        [body.id]
+      );
+
+      if (resp[0][0].featured_images) {
+        new_file = resp[0][0].featured_images + '|' + body.name + filename;
+      } else {
+        new_file = body.name + filename;
+      }
+    } else {
+      new_file = body.name + filename;
+    }
+
+    const res = await sql.promise().query(
+      "UPDATE product SET " + body.name + " = ? WHERE id = ?", 
+      [new_file, body.id]
+    );
+
+    if (res.affectedRows === 0) {
+      throw { kind: "not_found" };
+    }
+
+    result(null, {file: new_file});
+  } catch (err) {
+    result(err, null);
+  };
+};
+
 
 
 

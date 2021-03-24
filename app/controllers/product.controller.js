@@ -76,3 +76,24 @@ exports.get_product_by_id = (req, res) => {
   productModule.get_product_by_id(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
 };
 
+
+exports.upload = (req, res) => {
+  
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  var move = require('fs-move');
+  
+  if(req.body.name === 'p_image' || req.body.name === 'featured_images') {
+    move(req.file.destination + req.file.filename, req.file.destination + 'images/' + req.body.name + req.file.filename).catch((err)=>{throw(err)});
+  } else {
+    move(req.file.destination + req.file.filename, req.file.destination + 'blends/' + req.body.name + req.file.filename).catch((err)=>{throw(err)});
+  }
+
+  productModule.upload(req.body, req.file.filename, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
+};
+
