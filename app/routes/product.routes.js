@@ -1,0 +1,11 @@
+module.exports = app => {
+  const productModule = require("../controllers/product.controller.js");
+  
+  app.post("/get_products", productModule.getAll);
+  app.post("/get_products_menu", productModule.get_products_by_menu);
+  app.post("/get_product_id", productModule.get_product_by_id);
+  app.post("/add_product", productModule.create);
+  app.post("/edit_product", productModule.edit);
+  app.post("/delete_product", productModule.delete);
+  
+}

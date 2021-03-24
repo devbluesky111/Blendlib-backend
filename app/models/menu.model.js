@@ -32,7 +32,7 @@ menuModule.update = async (body, result) => {
       throw { kind: "not_found" };
     }
 
-    result(null, { id: res.insertId });
+    result(null, { id: body.id });
   } catch (err) {
     result(err, null);
   };
@@ -110,7 +110,7 @@ menuModule.updateSubMenu = async (body, result) => {
       throw { kind: "not_found" };
     }
 
-    result(null, { id: res.insertId });
+    result(null, { id: body.id });
   } catch (err) {
     result(err, null);
   };
