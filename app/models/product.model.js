@@ -8,21 +8,19 @@ const productModule = function(productGroup) {
   this.long_description = productGroup.long_description;
   this.main_menu = productGroup.main_menu;
   this.sub_menu = productGroup.sub_menu;
-  this.free_v = productGroup.free_v;
-  this.pro_v = productGroup.pro_v;
-  this.local_v = productGroup.local_v;
+  this.platinum = productGroup.platinum;
   this.p_image = productGroup.p_image;
   this.featured_images = productGroup.featured_images.join('|');
-  this.free_blend = productGroup.free_blend;
-  this.pro_blend = productGroup.pro_blend;
-  this.local_blend = productGroup.local_blend;
+  this.free_blend = productGroup.free_blend.join('|');
+  this.pro_blend = productGroup.pro_blend.join('|');
+  this.local_blend = productGroup.local_blend.join('|');
 };
 
 productModule.create = async (body, result) => {
   try {
     const [res, fields] = await sql.promise().query(
-      "INSERT INTO product SET name = ?, short_description = ?, long_description=?, main_menu=?, sub_menu=?, free_v=?, pro_v=?, local_v=?, p_image=?, featured_images=?, free_blend=?, pro_blend=?, local_blend=?, created = NOW()", 
-      [body.name, body.short_description, body.long_description, body.main_menu, body.sub_menu, body.free_v, body.pro_v, body.local_v, body.p_image, body.featured_images, body.free_blend, body.pro_blend, body.local_blend]
+      "INSERT INTO product SET name = ?, short_description = ?, long_description=?, main_menu=?, sub_menu=?, platinum=?, p_image=?, featured_images=?, free_blend=?, pro_blend=?, local_blend=?, created = NOW()", 
+      [body.name, body.short_description, body.long_description, body.main_menu, body.sub_menu, body.platinum, body.p_image, body.featured_images, body.free_blend, body.pro_blend, body.local_blend]
     );
 
     result(null, { id: res.insertId });
@@ -34,8 +32,8 @@ productModule.create = async (body, result) => {
 productModule.update = async (body, result) => {
   try {
     const [res, fields] = await sql.promise().query(
-      "UPDATE product SET name = ?, short_description = ?, long_description=?, main_menu=?, sub_menu=?, free_v=?, pro_v=?, local_v=?, p_image=?, featured_images=?, free_blend=?, pro_blend=?, local_blend=? WHERE id = ?", 
-      [body.name, body.short_description, body.long_description, body.main_menu, body.sub_menu, body.free_v, body.pro_v, body.local_v, body.p_image, body.featured_images, body.free_blend, body.pro_blend, body.local_blend, body.id]
+      "UPDATE product SET name = ?, short_description = ?, long_description=?, main_menu=?, sub_menu=?, platinum=?, p_image=?, featured_images=?, free_blend=?, pro_blend=?, local_blend=? WHERE id = ?", 
+      [body.name, body.short_description, body.long_description, body.main_menu, body.sub_menu, body.platinum, body.p_image, body.featured_images, body.free_blend, body.pro_blend, body.local_blend, body.id]
     );
 
     if (res.affectedRows === 0) {
@@ -112,23 +110,23 @@ productModule.get_product_by_id = async (body, result) => {
   };
 };
 
-productModule.upload = async (body, filename, result) => {
+productModule.upload = async (body, today, filename, result) => {
   try {
     let new_file;
 
-    if (body.name === 'featured_images') {
+    if (body.name === 'featured_images' || body.name === 'free_blend' || body.name === 'pro_blend' || body.name === 'local_blend') {
       let resp = await sql.promise().query(
-        "SELECT featured_images FROM product WHERE id = ?", 
+        "SELECT " + body.name + " FROM product WHERE id = ?", 
         [body.id]
       );
 
-      if (resp[0][0].featured_images) {
-        new_file = resp[0][0].featured_images + '|' + body.name + filename;
+      if (resp[0][0][body.name]) {
+        new_file = resp[0][0][body.name] + '|' + today + '/' + filename;
       } else {
-        new_file = body.name + filename;
+        new_file = today + '/' + filename;
       }
     } else {
-      new_file = body.name + filename;
+      new_file = today + '/' + filename;
     }
 
     const res = await sql.promise().query(

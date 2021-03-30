@@ -87,13 +87,19 @@ exports.upload = (req, res) => {
   }
 
   var move = require('fs-move');
-  
+  var mkdirp = require('mkdirp');
+  var today = Date.now();
+
   if(req.body.name === 'p_image' || req.body.name === 'featured_images') {
-    move(req.file.destination + req.file.filename, req.file.destination + 'images/' + req.body.name + req.file.filename).catch((err)=>{throw(err)});
+    mkdirp(req.file.destination + 'images/' + today).then(made =>
+      move(req.file.destination + req.file.filename, req.file.destination + 'images/' + today + '/' + req.file.filename).catch((err)=>{throw(err)})
+    ); 
   } else {
-    move(req.file.destination + req.file.filename, req.file.destination + 'blends/' + req.body.name + req.file.filename).catch((err)=>{throw(err)});
+    mkdirp(req.file.destination + 'blends/' + today).then(made =>
+      move(req.file.destination + req.file.filename, req.file.destination + 'blends/' + today + '/' + req.file.filename).catch((err)=>{throw(err)})
+    );
   }
 
-  productModule.upload(req.body, req.file.filename, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
+  productModule.upload(req.body, today, req.file.filename, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
 };
 

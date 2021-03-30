@@ -7,7 +7,7 @@ module.exports = app => {
       cb(null, 'upload/');
     },
     filename: function (req, file, cb) {
-      cb(null, `_${Date.now()}.${file.originalname.split('.').pop()}`);
+      cb(null, `${file.originalname.split(' ').join('_')}`);
     }
   });
 
