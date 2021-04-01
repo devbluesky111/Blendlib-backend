@@ -64,11 +64,17 @@ productModule.delete = async (ids, result) => {
   };
 };
 
-productModule.getAll = async (result) => {
+productModule.getAll = async (body, result) => {
   try {
-    const [res, fields] = await sql.promise().query(
-      "SELECT * FROM product"
-    );
+    let res;
+    if(body.platinum === 'on')
+      res = await sql.promise().query(
+        "SELECT * FROM product"
+      );
+    else if (body.platinum === 'off')
+      res = await sql.promise().query(
+        "SELECT * FROM product WHERE platinum = 'off' "
+      );
 
     result(null, res);
   } catch (err) {
@@ -80,14 +86,24 @@ productModule.getAll = async (result) => {
 productModule.get_products_by_menu = async (body, result) => {
   try {
     let res;
-    if(!body.sub_menu)
+    if(!body.sub_menu && body.platinum === 'on')
       res = await sql.promise().query(
         "SELECT * FROM product WHERE main_menu = ? ",
         [body.main_menu]
       );
-    else
+    else if (!body.sub_menu && body.platinum === 'off')
+      res = await sql.promise().query(
+        "SELECT * FROM product WHERE main_menu = ? AND platinum = 'off' ",
+        [body.main_menu]
+      );
+    else if (body.sub_menu && body.platinum === 'on')
       res = await sql.promise().query(
         "SELECT * FROM product WHERE main_menu = ? AND sub_menu = ? ",
+        [body.main_menu, body.sub_menu]
+      );
+    else if(body.sub_menu && body.platinum === 'off')
+      res = await sql.promise().query(
+        "SELECT * FROM product WHERE main_menu = ? AND sub_menu = ? AND platinum = 'off' ",
         [body.main_menu, body.sub_menu]
       );
 
@@ -99,10 +115,17 @@ productModule.get_products_by_menu = async (body, result) => {
 
 productModule.get_product_by_id = async (body, result) => {
   try {
-    const  res = await sql.promise().query(
-      "SELECT * FROM product WHERE id = ? ",
-      [body.id]
-    );
+    let res;
+    if(body.platinum === 'on')
+      res = await sql.promise().query(
+        "SELECT * FROM product WHERE id = ? ",
+        [body.id]
+      );
+    if(body.platinum === 'off')
+      res = await sql.promise().query(
+        "SELECT * FROM product WHERE id = ? AND platinum = 'off' ",
+        [body.id]
+      );
 
     result(null, res);
   } catch (err) {

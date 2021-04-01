@@ -51,7 +51,7 @@ exports.delete = (req, res) => {
 };
 
 exports.getAll = (req, res) => {
-  productModule.getAll((err, data) => resCallback(res, err, data, "Some error occurred while getting the 'products'."));
+  productModule.getAll(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'products'."));
 };
 
 exports.get_products_by_menu = (req, res) => {

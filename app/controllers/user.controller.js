@@ -72,6 +72,17 @@ exports.pending_solve = (req, res) => {
   userModule.pending_solve(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while deleting the 'users'."));
 };
 
+exports.pending_membership = (req, res) => {
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  userModule.pending_membership(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while deleting the 'users'."));
+};
+
 
 exports.getAll = (req, res) => {
   userModule.getAll(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'user data'."));
@@ -89,8 +100,6 @@ exports.get_user_by_id = (req, res) => {
   userModule.get_user_by_id(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'user data'."));
 };
 
-
-
 exports.login = (req, res) => {
   // Validate request
   if (!req.body) {
@@ -99,12 +108,18 @@ exports.login = (req, res) => {
     });
   }
 
-  userModule.login(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while login."));
+  userModule.login(req, res);
+};
+
+exports.check_login = (req, res) => {
+  // console.log('---cs--->', req.session.email);
+  userModule.check_login(req, res);
 };
 
 
 exports.logout = (req, res) => {
-  userModule.logout((err, data) => resCallback(res, err, data, "Some error occurred while logout."));
+  req.session.email = '';
+  res.send({status: 'success'});
 };
 
 

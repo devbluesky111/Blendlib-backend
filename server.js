@@ -1,14 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require('cors');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const port = process.env.PORT || 5000;
 
 const app = express();
 
-app.use(cors());
-
+// app.use(cors());
+// app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3001'], credentials: true, methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE'] }));
+app.use(cors({ origin: ['https://sumish.herokuapp.com', 'https://sumish-admin.herokuapp.com'], credentials: true, methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE'] }));
+app.use(cookieParser());
+app.use(session({secret: "Shh, its a secret!", resave: true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

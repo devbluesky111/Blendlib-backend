@@ -21,12 +21,22 @@ const userModule = function(userGroup) {
 
 userModule.create = async (body, result) => {
   try {
-    const [res, fields] = await sql.promise().query(
-      "INSERT INTO user SET name = ?, lastName = ?, nickname = ?, phone = ?, email = ?, company = ?, jobTitle = ?, birthday = ?, address = ?, notes = ?, password = ?, membership = ?, pending = ?, status = ?, created = NOW(), last_login = NOW() ", 
-      [body.name, body.lastName, body.nickname, body.phone, body.email, body.company, body.jobTitle, body.birthday, body.address, body.notes, body.password, body.membership, body.pending, body.status]
+    const resp = await sql.promise().query(
+      "SELECT * FROM user WHERE email = ? ",
+      [body.email]
     );
 
-    result(null, { id: res.insertId });
+    if (resp[0].length > 0) {
+      result(null, {status: 'fail'});
+    } else {
+      const res = await sql.promise().query(
+        "INSERT INTO user SET name = ?, lastName = ?, nickname = ?, phone = ?, email = ?, company = ?, jobTitle = ?, birthday = ?, address = ?, notes = ?, password = ?, membership = ?, pending = ?, status = ?, created = NOW(), last_login = NOW() ", 
+        [body.name, body.lastName, body.nickname, body.phone, body.email, body.company, body.jobTitle, body.birthday, body.address, body.notes, body.password, body.membership, body.pending, body.status]
+      );
+  
+      result(null, { status: 'success', id: res.insertId });
+    }
+   
   } catch (err) {
     result(err, null);
   };
@@ -78,6 +88,31 @@ userModule.pending_solve = async (body, result) => {
       res = await sql.promise().query(
         "UPDATE user SET pending = ? WHERE id = ?", 
         ['no', body.id]
+      );
+    }
+
+    if (res.affectedRows === 0) {
+      throw { kind: "not_found" };
+    }
+
+    result(null, { id: body.id });
+  } catch (err) {
+    result(err, null);
+  };
+};
+
+userModule.pending_membership = async (body, result) => {
+  try {
+    let res;
+    if(body.type === 'cancel') {
+      res = await sql.promise().query(
+        "UPDATE user SET pending = ? WHERE id = ?", 
+        ['no', body.id]
+      );
+    } else if (body.type === 'ask') {
+      res = await sql.promise().query(
+        "UPDATE user SET pending = ? WHERE id = ?", 
+        [body.value, body.id]
       );
     }
 
@@ -146,16 +181,52 @@ userModule.get_user_by_id = async (body, result) => {
   };
 };
 
-userModule.login = async (body, result) => {
+userModule.login = async (req, res) => {
+  // console.log('---ss--->', req.session.email);
+  // console.log('---cc--->', req.cookies.rememberMeEmail);
   try {
-    const  res = await sql.promise().query(
+    const resp = await sql.promise().query(
       "SELECT * FROM user WHERE email = ? AND password = ? ",
-      [body.email, body.password]
+      [req.body.email, req.body.password]
     );
 
-    result(null, res);
+    const respo = await sql.promise().query(
+      "SELECT * FROM user WHERE email = ? AND password = ? AND status = 'on' ",
+      [req.body.email, req.body.password]
+    );
+
+    if(resp[0].length === 0) {
+      res.send({status: 'fail'});
+    } else if (respo[0].length === 0) {
+      res.send({status: 'restrict'});
+    } else {
+      req.session.email = req.body.email;
+      // res.cookie('rememberMeEmail', '', {maxAge: 7*24*60*60*1000});
+      res.send({status: 'success'});
+    }
+
   } catch (err) {
-    result(err, null);
+    throw(err);
+  };
+};
+
+userModule.check_login = async (req, res) => {
+  // console.log('---ss--->', req.session.email);
+  // console.log('---cc--->', req.cookies.rememberMeEmail);
+  try {
+    
+    if (req.session.email) {
+      const resp = await sql.promise().query(
+        "SELECT * FROM user WHERE email = ? ",
+        [req.session.email]
+      );
+      res.send({status: 'success', data: resp});
+    } else {
+      res.send({status: 'fail'});
+    }
+
+  } catch (err) {
+    throw(err);
   };
 };
 
