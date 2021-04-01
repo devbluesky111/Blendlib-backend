@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // var whitelist = ['http://localhost:3000', 'http://localhost:3001'];
-var whitelist = ['http://sumish.herokuapp.com', 'http://sumish-admin.herokuapp.com'];
+var whitelist = ['https://sumish.herokuapp.com', 'https://sumish-admin.herokuapp.com'];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
