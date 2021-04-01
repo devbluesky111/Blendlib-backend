@@ -9,9 +9,22 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-// app.use(cors());
-// app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3001'], credentials: true, methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE'] }));
-app.use(cors({ origin: ['https://sumish.herokuapp.com', 'https://sumish-admin.herokuapp.com'], credentials: true, methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE'] }));
+// var whitelist = ['http://localhost:3000', 'http://localhost:3001'];
+var whitelist = ['https://sumish.herokuapp.com', 'https://sumish-admin.herokuapp.com'];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE']
+}
+
+app.use(cors(corsOptions));
+
 app.use(cookieParser());
 app.use(session({secret: "Shh, its a secret!", resave: true, saveUninitialized: true}));
 app.use(bodyParser.json());
