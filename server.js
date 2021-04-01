@@ -23,8 +23,8 @@ var corsOptions = {
   methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE']
 }
 
-app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(cookieParser());
 app.use(session({secret: "Shh, its a secret!", resave: true, saveUninitialized: true}));
