@@ -23,7 +23,7 @@ var corsOptions = {
   methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE']
 }
 
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
