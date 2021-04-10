@@ -168,6 +168,16 @@ productModule.upload = async (body, today, filename, result) => {
 };
 
 
+productModule.getCount = async (body, result) => {
+  try {
+    const [res, fields] = await sql.promise().query(
+      "SELECT * FROM product where platinum = 'off' "
+    );
+    result(null, {count : res.length});
+  } catch (err) {
+    result(err, null);
+  };
+};
 
 
 module.exports = productModule;

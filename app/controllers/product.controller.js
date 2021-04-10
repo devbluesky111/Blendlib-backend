@@ -103,3 +103,6 @@ exports.upload = (req, res) => {
   productModule.upload(req.body, today, req.file.filename, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
 };
 
+exports.getCount = (req, res) => {
+  productModule.getCount(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'products'."));
+};
