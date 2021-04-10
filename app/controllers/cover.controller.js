@@ -66,3 +66,21 @@ exports.get_cover_by_id = (req, res) => {
   coverModule.get_cover_by_id(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'cover data'."));
 };
 
+exports.upload = (req, res) => {
+  
+  // Validate request
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+  var move = require('fs-move');
+  var mkdirp = require('mkdirp');
+  var today = Date.now();
+
+  mkdirp(req.file.destination + 'coverimages/' + today).then(made =>
+    move(req.file.destination + req.file.filename, req.file.destination + 'coverimages/' + today + '/' + req.file.filename).catch((err)=>{throw(err)})
+  );
+
+  coverModule.upload(req.body, today, req.file.filename, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'menu data'."));
+};

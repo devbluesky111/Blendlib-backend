@@ -2,70 +2,58 @@ const sql = require("./db.js");
 
 // constructor
 const coverModule = function(coverGroup) {
-  this.id = coverGroup.id;
-  this.title = coverGroup.title;
-  this.subtitle = coverGroup.subtitle;
-  this.image = coverGroup.image;
-  this.url = coverGroup.url;
+    this.id = coverGroup.id;
+    this.title = coverGroup.title;
+    this.subtitle = coverGroup.subtitle;
+    this.cover_image = coverGroup.cover_image;
 };
 
-// coverModule.create = async (body, result) => {
-//   try {
-//     const resp = await sql.promise().query(
-//       "SELECT * FROM cover WHERE email = ? ",
-//       [body.email]
-//     );
+coverModule.create = async (body, result) => {
+  try {
+    const [res, fields] = await sql.promise().query(
+      "INSERT INTO cover SET title = ?, subtitle = ?, cover_image = ?, created = NOW()", 
+      [body.title, body.subtitle, body.cover_image]
+    );
+    result(null, { id: res.insertId });
+  } catch (err) {
+    result(err, null);
+  };
+};
 
-//     if (resp[0].length > 0) {
-//       result(null, {status: 'fail'});
-//     } else {
-//       const res = await sql.promise().query(
-//         "INSERT INTO cover SET name = ?, lastName = ?, nickname = ?, phone = ?, email = ?, company = ?, jobTitle = ?, birthday = ?, address = ?, notes = ?, password = ?, membership = ?, pending = ?, status = ?, created = NOW(), last_login = NOW() ", 
-//         [body.name, body.lastName, body.nickname, body.phone, body.email, body.company, body.jobTitle, body.birthday, body.address, body.notes, body.password, body.membership, body.pending, body.status]
-//       );
-  
-//       result(null, { status: 'success', id: res.insertId });
-//     }
-   
-//   } catch (err) {
-//     result(err, null);
-//   };
-// };
+coverModule.update = async (body, result) => {
+  try {
+    const [res, fields] = await sql.promise().query(
+      "UPDATE cover SET title = ?, subtitle = ?, cover_image = ? WHERE id = ?", 
+      [body.title, body.subtitle, body.cover_image, body.id]
+    );
 
-// coverModule.update = async (body, result) => {
-//   try {
-//     const [res, fields] = await sql.promise().query(
-//       "UPDATE cover SET name = ?, lastName = ?, nickname = ?, phone = ?, email = ?, company = ?, jobTitle = ?, birthday = ?, address = ?, notes = ?, password = ?, membership = ?, pending = ?, status = ? WHERE id = ?", 
-//       [body.name, body.lastName, body.nickname, body.phone, body.email, body.company, body.jobTitle, body.birthday, body.address, body.notes, body.password, body.membership, body.pending, body.status, body.id]
-//     );
+    if (res.affectedRows === 0) {
+      throw { kind: "not_found" };
+    }
 
-//     if (res.affectedRows === 0) {
-//       throw { kind: "not_found" };
-//     }
+    result(null, { id: body.id });
+  } catch (err) {
+    result(err, null);
+  };
+};
 
-//     result(null, { id: body.id });
-//   } catch (err) {
-//     result(err, null);
-//   };
-// };
-
-// coverModule.delete = async (ids, result) => {
-//   try {    
-//     let query = [];
-//     ids.map((id)=>{
-//       query.push('id = ' + id);
-//     });
-//     let query_str = query.join(' OR ');
+coverModule.delete = async (ids, result) => {
+  try {    
+    let query = [];
+    ids.map((id)=>{
+      query.push('id = ' + id);
+    });
+    let query_str = query.join(' OR ');
     
-//     await sql.promise().query(
-//       "DELETE FROM cover WHERE " + query_str
-//     );
+    await sql.promise().query(
+      "DELETE FROM cover WHERE " + query_str
+    );
 
-//     result(null, { ids: ids });
-//   } catch (err) {
-//     result(err, null);
-//   };
-// };
+    result(null, { ids: ids });
+  } catch (err) {
+    result(err, null);
+  };
+};
 
 coverModule.getAll = async (result) => {
   try {
@@ -79,18 +67,35 @@ coverModule.getAll = async (result) => {
   };
 };
 
-// coverModule.get_cover_by_id = async (body, result) => {
-//   try {
-//     const  res = await sql.promise().query(
-//       "SELECT * FROM cover WHERE id = ? ",
-//       [body.id]
-//     );
+coverModule.get_cover_by_id = async (body, result) => {
+  try {
+    const [res, fields] = await sql.promise().query(
+      "SELECT * FROM cover WHERE id = ? ",
+      [body.id]
+    );
+    result(null, res);
+  } catch (err) {
+    result(err, null);
+  };
+};
 
-//     result(null, res);
-//   } catch (err) {
-//     result(err, null);
-//   };
-// };
+coverModule.upload = async (body, today, filename, result) => {
+  try {
+    let new_file;
+    new_file = today + '/' + filename;
 
+    const [res, fields] = await sql.promise().query(
+      "UPDATE cover SET " + body.name + " = ? WHERE id = ?", 
+      [new_file, body.id]
+    );
+    if (res.affectedRows === 0) {
+      throw { kind: "not_found" };
+    }
+
+    result(null, {file: new_file});
+  } catch (err) {
+    result(err, null);
+  };
+};
 
 module.exports = coverModule;
