@@ -21,5 +21,6 @@ module.exports = app => {
   app.post("/edit_product", productModule.edit);
   app.post("/delete_product", productModule.delete);
   app.post("/upload", upload.single('file'), productModule.upload);
+  app.post("/get_count", productModule.getCount);
   
 }

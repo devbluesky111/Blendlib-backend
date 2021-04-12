@@ -9,8 +9,8 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
-// var whitelist = ['http://localhost:3000', 'http://localhost:3001'];
-var whitelist = ['https://sumish.herokuapp.com', 'https://sumish-admin.herokuapp.com'];
+var whitelist = ['http://localhost:3000', 'http://localhost:3001'];
+// var whitelist = ['https://sumish.herokuapp.com', 'https://sumish-admin.herokuapp.com'];
 var corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -38,6 +38,7 @@ app.use(express.static('upload'));
 require("./app/routes/menu.routes.js")(app);
 require("./app/routes/product.routes.js")(app);
 require("./app/routes/user.routes.js")(app);
+require("./app/routes/cover.routes.js")(app);
 
 
 // set port, listen for requests
