@@ -15,6 +15,7 @@ module.exports = app => {
 
   
   app.post("/get_products", productModule.getAll);
+  app.post("/get_products_new", productModule.getNew);
   app.post("/get_products_menu", productModule.get_products_by_menu);
   app.post("/get_product_id", productModule.get_product_by_id);
   app.post("/add_product", productModule.create);

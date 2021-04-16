@@ -54,6 +54,10 @@ exports.getAll = (req, res) => {
   productModule.getAll(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'products'."));
 };
 
+exports.getNew = (req, res) => {
+  productModule.getNew(req.body, (err, data) => resCallback(res, err, data, "Some error occurred while getting the 'newly added products'."));
+};
+
 exports.get_products_by_menu = (req, res) => {
   // Validate request
   if (!req.body) {

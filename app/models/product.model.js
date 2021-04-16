@@ -66,14 +66,32 @@ productModule.delete = async (ids, result) => {
 
 productModule.getAll = async (body, result) => {
   try {
-    let res;
+    let res, fields;
     if(body.platinum === 'on')
-      res = await sql.promise().query(
+    [res, fields]  = await sql.promise().query(
         "SELECT * FROM product"
       );
     else if (body.platinum === 'off')
-      res = await sql.promise().query(
+    [res, fields] = await sql.promise().query(
         "SELECT * FROM product WHERE platinum = 'off' "
+      );
+
+    result(null, res);
+  } catch (err) {
+    result(err, null);
+  };
+};
+
+productModule.getNew = async (body, result) => {
+  try {
+    let res, fields;
+    if(body.platinum === 'on')
+    [res, fields]  = await sql.promise().query(
+        "SELECT * FROM product ORDER BY created DESC"
+      );
+    else if (body.platinum === 'off')
+    [res, fields] = await sql.promise().query(
+        "SELECT * FROM product WHERE platinum = 'off' ORDER BY created DESC"
       );
 
     result(null, res);
