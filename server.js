@@ -39,6 +39,7 @@ require("./app/routes/menu.routes.js")(app);
 require("./app/routes/product.routes.js")(app);
 require("./app/routes/user.routes.js")(app);
 require("./app/routes/cover.routes.js")(app);
+require("./app/routes/blog.routes.js")(app);
 
 
 // set port, listen for requests
