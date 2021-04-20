@@ -40,6 +40,8 @@ require("./app/routes/product.routes.js")(app);
 require("./app/routes/user.routes.js")(app);
 require("./app/routes/cover.routes.js")(app);
 require("./app/routes/blog.routes.js")(app);
+require("./app/routes/subscribe.routes.js")(app);
+require("./app/routes/campaign.routes.js")(app);
 
 
 // set port, listen for requests
