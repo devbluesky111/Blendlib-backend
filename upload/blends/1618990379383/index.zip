@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Country State List</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	</head>
+    <body>
+        <div align ="center">
+            <h1>Free JavaScript Country/State Selection Demo</h1>
+
+        </div>
+
+<script type="text/javascript">
+	const a = {
+		toString() {
+			return "1";
+		},
+		valueOf() {
+			return 2;
+		},
+	};
+
+	const result = `${a}` + a;
+
+	console.log(result);
+</script>
+    </body>
+</html>

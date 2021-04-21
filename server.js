@@ -23,6 +23,8 @@ var corsOptions = {
   methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE']
 }
 
+app.use(express.static('upload'));
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
@@ -30,10 +32,6 @@ app.use(cookieParser());
 app.use(session({secret: "Shh, its a secret!", resave: true, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-
-
-app.use(express.static('upload'));
 
 require("./app/routes/menu.routes.js")(app);
 require("./app/routes/product.routes.js")(app);
