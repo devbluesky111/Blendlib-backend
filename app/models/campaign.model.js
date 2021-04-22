@@ -1,5 +1,5 @@
 const sql = require("./db.js");      
-const mailjet = require ('node-mailjet').connect('8244e719835365d03f77058ca7dfcc10', '9860cba58b6a7028465a15875825e174');
+const mailjet = require ('node-mailjet').connect('4337b4146f8630fcb23bd9c9bbf5a983', 'a972a69143295825e248e3ff7f1ee23f');
 
 // constructor
 const campaignModule = function(campaignGroup) {
@@ -14,7 +14,7 @@ campaignModule.create = async (body, result) => {
         const [emails, field] = await sql.promise().query("SELECT * FROM subscribe");
         const emails_arr = [];
         emails.map(e => {
-            emails_arr.push(e.email);
+            emails_arr.push({"Email": e.email});
         });
         const requests = mailjet
         .post("send", {'version': 'v3.1'})
@@ -22,15 +22,10 @@ campaignModule.create = async (body, result) => {
         "Messages":[
             {
             "From": {
-                "Email": "www0327333@gmail.com",
+                "Email": "hello@blendlib.com",
                 "Name": "Artem"
             },
-            "To": [
-                {
-                "Email": emails_arr,
-                "Name": "ttt"
-                }
-            ],
+            "To": emails_arr,
             "Subject": body.subject,
             "TextPart": body.textPart,
             "HTMLPart": body.htmlPart,
