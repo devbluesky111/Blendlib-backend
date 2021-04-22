@@ -11,8 +11,12 @@ const campaignModule = function(campaignGroup) {
 
 campaignModule.create = async (body, result) => {
     try {
-        const [emails, field] = await sql.promise().query("SELECT * FROM subscribe");
+        const [user_emails, field1] = await sql.promise().query("SELECT * FROM user");
+        const [emails, field2] = await sql.promise().query("SELECT * FROM subscribe");
         const emails_arr = [];
+        user_emails.map(user => {
+            emails_arr.push({"Email": user.email});
+        });
         emails.map(e => {
             emails_arr.push({"Email": e.email});
         });
