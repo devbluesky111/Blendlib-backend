@@ -44,7 +44,7 @@ campaignModule.create = async (body, result) => {
                 "INSERT INTO campaign SET subject = ?, textPart = ?, htmlPart = ?, created = NOW()", 
                 [body.subject ,body.textPart, body.htmlPart]
             ).then((res)=> {
-                result(null, { res: res });
+                result(null, { status: 'success', id: res.insertId });
             })
         })
         .catch((err) => {
